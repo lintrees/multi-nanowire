@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     
     
     size_t n = Qs->size;
-    Potential_STL_3d<> phi;
+    Potential_superimpose_3d<> phi;
     for (size_t i = 0; i < n; ++i)
     {
         double Q = gsl_vector_get(Qs, i);
@@ -48,7 +48,7 @@ int main(int argc, char** argv)
         double y = gsl_matrix_get(coord, i, 1);        
         Potential_metal_ball_3d phi_orgin(Q, R);
         Potential_boost_3d phi_i(phi_orgin, x, y, 0);
-        phi.push_back(&phi_i);
+//        phi.push_back(phi_i);
     }
     
     double dx = (xmax-xmin)/N;

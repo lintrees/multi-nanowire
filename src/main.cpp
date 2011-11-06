@@ -39,9 +39,9 @@ int main(int argc, char** argv)
     R = atof(argv[2]);    
     gsl_vector* Qs = Charge_distri(U0, R, inner_distance);
     
-    gsl_vector_fprintf(stdout, Qs, "%g");
+//    gsl_vector_fprintf(stdout, Qs, "%g");
     
-    exit(0);
+//    exit(0);
     
     size_t n = Qs->size;
     Electron_supply S;
@@ -58,8 +58,8 @@ int main(int argc, char** argv)
         Current_density I_1d(T, S, Ef, Ef);
         double i1d = I_1d();
         I_1d_sum += i1d;
-        std::cout.precision(15);
-        std::cout << phi(0) << "  " << U(2e-9) << std::endl;
+        std::cout.precision(12);
+        std::cout << phi(0) << "   ..    " << U(2e-9) << std::endl;
         std::cout << T(Ef)<< "  " << i1d << std::endl;
     }
     std::cout << I_1d_sum*M_PI*R*R << std::endl; 
