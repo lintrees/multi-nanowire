@@ -7,19 +7,29 @@ except ImportError:
     pass
 
 from sys import argv
-from math import pi, sin, cos
-from random import uniform, triangular
+from math import pi, sin, cos, sqrt
+from random import uniform, triangular, normalvariate
 
-fn_array_coord = "array_coord.dat"
+fn_array_coord = "data/array_coord.dat"
 
-n = int(argv[1])
-maxr = float(argv[2])
+N = int(argv[1])
+R = float(argv[2])
+
+n = sqrt(N)+2
+d = R/n
+sigma = .1
+
+print(d, n)
 
 coords = []
-for i in range(n):
-    r, theta = triangular(0, maxr, maxr), uniform(0, 2*pi)
-    coords.append((r*sin(theta), r*cos(theta)))
+for i in range(1, int(n)+1):
+    dtheta = 2*pi/i
+    r0 = i*d
+    for j in range(i):
+        r =  normalvariate(r0, d*sigma)
+        theta = normalvariate(dtheta*j, dtheta*sigma)
+        coords.append((r*sin(theta), r*cos(theta)))
     
 with open(fn_array_coord, 'w') as fout:
     for x, y in coords:
-        print("{:20.12e}   {:20.12e}".format(x, y), file =fout)
+        print("{:20.12e}   {:20.12e}".format(x, y), file=fout)

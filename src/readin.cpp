@@ -11,7 +11,7 @@
 
 #include <cstdio>
 
-const char* fn_array_coord = "array_coord.dat";
+const char* fn_array_coord = "data/array_coord.dat";
 
 struct Nanowire
 {

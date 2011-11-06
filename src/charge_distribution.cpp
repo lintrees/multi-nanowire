@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <cassert>
+#include <algorithm>
 
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
@@ -15,6 +16,10 @@ gsl_vector* Charge_distri(double phi, double R, const gsl_matrix* inner_dist)
 /* input: potential, radius, inner_distance */
 {
     size_t n = inner_dist->size1;
+    
+    assert(std::all_of(inner_dist->data, inner_dist->data+n*n,
+        [&R](double d){return d>2*R || d==0;}));
+    
     gsl_matrix* A = gsl_matrix_alloc(n, n);
     for (size_t i = 0; i < n; ++i)
     {   for (size_t j = 0; j < i; ++j)
@@ -28,8 +33,6 @@ gsl_vector* Charge_distri(double phi, double R, const gsl_matrix* inner_dist)
     
     gsl_vector_view diag = gsl_matrix_diagonal(A);
     gsl_vector_set_all(&diag.vector, 1/R);
-    
-    assert(gsl_matrix_max(A) == 1/R);
     
     gsl_matrix_scale(A, 1/(4*M_PI*epsilon_0));
     
