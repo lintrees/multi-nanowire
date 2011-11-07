@@ -44,23 +44,24 @@ int main(int argc, char** argv)
 //    exit(0);
     
     size_t n = Qs->size;
-    Electron_supply S;
+    Sptr_Electron_supply pS(new Electron_supply);
     double I_1d_sum;
     #pragma omp parallel
     #pragma omp for schedule(dynamic) reduction(+:I_1d_sum)
     for (size_t i = 0; i < n; ++i)
     {
         double Q = gsl_vector_get(Qs, i);
-        Potential_metal_ball phi_orgin(Q, R);
-        Potential_boost phi(phi_orgin, -R);
-        Potential_energy U(phi, phi(0));
-        Transmission_probability T(U);             
-        Current_density I_1d(T, S, Ef, Ef);
+        Sptr_Potential pphi;
+        pphi = Sptr_Potential(new Potential_metal_ball(Q, R));
+        pphi = Sptr_Potential(new Potential_boost(pphi, -R));
+        Sptr_Potential_energy pU(new Potential_energy(pphi, (*pphi)(0)));
+        Sptr_Transmission_probability pT(new Transmission_probability(pU));             
+        Current_density I_1d(pT, pS, Ef, Ef);
         double i1d = I_1d();
         I_1d_sum += i1d;
         std::cout.precision(12);
-        std::cout << phi(0) << "   ..    " << U(2e-9) << std::endl;
-        std::cout << T(Ef)<< "  " << i1d << std::endl;
+//        std::cout << phi(0) << "   ..    " << U(2e-9) << std::endl;
+        std::cout << (*pT)(Ef)<< "  " << i1d << std::endl;
     }
     std::cout << I_1d_sum*M_PI*R*R << std::endl; 
 }

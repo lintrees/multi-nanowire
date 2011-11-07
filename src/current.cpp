@@ -34,7 +34,7 @@ double Current_density::operator() () const
     gsl_integration_workspace* w;
     w = gsl_integration_workspace_alloc(integration_workspace_size);
     double int_Emax = _Ef + _pS->Emax();
-    int_params_struct int_params = {_pT, _pS, _Ef};
+    int_params_struct int_params = {_pT.get(), _pS.get(), _Ef};
     gsl_function f;
     f.function = &int_func;
     f.params = &int_params;    

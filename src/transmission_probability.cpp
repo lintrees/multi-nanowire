@@ -42,7 +42,7 @@ double Transmission_probability::operator() (double E) const
 {
     gsl_integration_workspace* w;
     w = gsl_integration_workspace_alloc(integration_workspace_size);
-    int_params_struct int_params = {_pU, E};
+    int_params_struct int_params = {_pU.get(), E};
     gsl_function f;
     f.function = &int_func;
     f.params = &int_params;

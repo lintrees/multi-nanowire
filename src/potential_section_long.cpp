@@ -45,10 +45,11 @@ int main(int argc, char** argv)
     {
         double Q = gsl_vector_get(Qs, i);
         double x = gsl_matrix_get(coord, i, 0);
-        double y = gsl_matrix_get(coord, i, 1);        
-        Potential_metal_ball_3d phi_orgin(Q, R);
-        Potential_boost_3d phi_i(phi_orgin, x, y, 0);
-//        phi.push_back(phi_i);
+        double y = gsl_matrix_get(coord, i, 1);
+        Sptr_Potential_3d pphi_i;
+        pphi_i = Sptr_Potential_3d(new Potential_metal_ball_3d(Q, R));
+        pphi_i = Sptr_Potential_3d(new Potential_boost_3d(pphi_i, x, y, 0));
+        phi.push_back(pphi_i);
     }
     
     double dx = (xmax-xmin)/N;
