@@ -9,22 +9,22 @@
 #include <gsl/gsl_const.h>
 #include <gsl/gsl_linalg.h>
 
+#include "coordinate.h"
 
 static const double epsilon_0 = GSL_CONST_MKSA_VACUUM_PERMITTIVITY;
 
-gsl_vector* Charge_distri(double phi, double R, const gsl_matrix* inner_dist)
+gsl_vector* Charge_distri(double phi, double R, const Inner_distance& inner_dist)
 /* input: potential, radius, inner_distance */
 {
-    size_t n = inner_dist->size1;
-    
-    assert(std::all_of(inner_dist->data, inner_dist->data+n*n,
-        [&R](double d){return d>2*R || d==0;}));
+    size_t n = inner_dist.size();
+//    assert(std::all_of(inner_dist->data, inner_dist->data+n*n,
+//        [&R](double d){return d>2*R || d==0;}));
     
     gsl_matrix* A = gsl_matrix_alloc(n, n);
     for (size_t i = 0; i < n; ++i)
     {   for (size_t j = 0; j < i; ++j)
         {
-            double rr = gsl_matrix_get(inner_dist, i, j);
+            double rr = inner_dist(i, j);
             rr = 1 / rr;
             gsl_matrix_set(A, i, j, rr);
             gsl_matrix_set(A, j, i, rr);
