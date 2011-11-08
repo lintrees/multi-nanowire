@@ -23,7 +23,7 @@ static const double epsabs = 1e-8;
 
 static size_t n;
 static const size_t p = 2;
-static double U0;
+static double phi0;
 
 
 static int f_f(const gsl_vector* x, void* params, gsl_vector* f)
@@ -33,7 +33,7 @@ static int f_f(const gsl_vector* x, void* params, gsl_vector* f)
     for (size_t i = 0; i < n; ++i)
     {
         double xi = X[i], yi = Y[i];        
-        gsl_vector_set(f, i, Q/(epsilon_0_4_pi*(xi+R))+U0 -yi );
+        gsl_vector_set(f, i, Q/(epsilon_0_4_pi*(xi+R))-phi0 -yi );
     }
     return 0;
 }
@@ -58,7 +58,7 @@ static int f_fdf(const gsl_vector* x, void* params, gsl_vector* f, gsl_matrix* J
     for (size_t i = 0; i < n; ++i)
     {
         double xi = X[i], yi = Y[i];        
-        gsl_vector_set(f, i, Q/(epsilon_0_4_pi*(xi+R))+U0 -yi );
+        gsl_vector_set(f, i, Q/(epsilon_0_4_pi*(xi+R))-phi0 -yi );
         gsl_matrix_set(J, i, 0, -Q/(epsilon_0_4_pi*(xi+R)*(xi+R)) );
         gsl_matrix_set(J, i, 1, 1/(epsilon_0_4_pi*(xi+R)) );
     }
@@ -68,8 +68,7 @@ static int f_fdf(const gsl_vector* x, void* params, gsl_vector* f, gsl_matrix* J
 int main(int argc, char** argv)
 {
     assert(argc==2);
-    U0 = atof(argv[1]);
-
+    phi0 = atof(argv[1]);
     std::ifstream ifs(fnin);
     assert(ifs);
     double xi, yi;
@@ -78,6 +77,7 @@ int main(int argc, char** argv)
         X.push_back(xi);
         Y.push_back(yi);        
     }
+    ifs.close();
     n = X.size();
 
     gsl_multifit_fdfsolver* s = gsl_multifit_fdfsolver_alloc(gsl_multifit_fdfsolver_lmsder, n, p);
@@ -89,7 +89,7 @@ int main(int argc, char** argv)
     f.n = n;
     f.p = p;
     
-    double x_init[p] = { 1e-8, -1e-16};
+    double x_init[p] = {1e-8, -1e-16};
     gsl_vector_view x = gsl_vector_view_array(x_init, p);
     gsl_multifit_fdfsolver_set(s, &f, &x.vector);
 
@@ -104,8 +104,8 @@ int main(int argc, char** argv)
         status = gsl_multifit_test_gradient(g, epsabs);
     } while (status == GSL_CONTINUE);
     
-    gsl_vector_fprintf(stdout, s->x, "%.12g");
-    gsl_vector_fprintf(stdout, s->f, "%.12g");
+    double R = gsl_vector_get(s->x, 0);
+    printf("%.12g\n", R);
 }
 
 

@@ -13,21 +13,29 @@ from scipy.interpolate import LinearNDInterpolator
 from numpy import array
 
 
-fn_potential = "data/potential.out"
-fn_triangle = "data/triangle.out"
+datadir = "data/"
 
-x0, y0 = map(float, argv[1:3])
+
+fn_potential = "potential.out"
+fn_triangle = "triangle.out"
+
+x0, y0 = map(float, input().split()[:2])
+
+if len(argv) > 1:
+    fn_prefix = argv[1]
+    fn_potential = '.'.join((fn_prefix, fn_potential))
+    fn_triangle = '.'.join((fn_prefix, fn_triangle))
 
 class Point(object): pass
 
 allPoints = []
-for line in open(fn_potential):
+for line in open(datadir+fn_potential):
     p = Point()
     p.x, p.y, p.phi, p.doc, p.po = map(float, line.split())
     allPoints.append(p)
     
 triangles = []
-for line in open(fn_triangle):
+for line in open(datadir+fn_triangle):
     triNo = map(lambda no: int(no)-1, line.split()[:3])
     tri = frozenset(map(allPoints.__getitem__, triNo))
     assert len(tri) == 3    
