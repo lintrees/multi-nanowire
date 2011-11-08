@@ -44,15 +44,29 @@ int main(int argc, char** argv)
     Sptr_Electron_supply pS(new Electron_supply);
     double I_1d_sum;
     std::vector<double> I_1ds(n);
+    std::shared_ptr<Potential_superimpose_3d<>>
+        pphi_sup(new Potential_superimpose_3d<>);
+    for (size_t i = 0; i < n; ++i)
+    {
+        double Q = gsl_vector_get(Qs, i);
+        double x = coord.x(i);
+        double y = coord.y(i);
+        Sptr_Potential_3d pphi_i;
+        pphi_i = Sptr_Potential_3d(new Potential_metal_sphere_3d(Q, R));
+        pphi_i = Sptr_Potential_3d(new Potential_boost_3d(pphi_i, x, y, 0));
+        pphi_sup->push_back(pphi_i);
+    }
+    
     #pragma omp parallel
     #pragma omp for schedule(dynamic) reduction(+:I_1d_sum)
     for (size_t i = 0; i < n; ++i)
     {
         double Q = gsl_vector_get(Qs, i);
+        double x = coord.x(i);
+        double y = coord.y(i);
         Potential_superimpose<>* pphi = new Potential_superimpose<>;
         Sptr_Potential spphi;        
-        spphi = Sptr_Potential(new Potential_metal_sphere(Q, R));
-        spphi = Sptr_Potential(new Potential_boost(spphi, -R));
+        spphi = Sptr_Potential(new Potential_path(pphi_sup, x, y, R, 0, 0));
         pphi->push_back(spphi);
         spphi = Sptr_Potential(new Potential_constant(phi0));
         pphi->push_back(spphi);

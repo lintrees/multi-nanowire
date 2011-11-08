@@ -52,11 +52,10 @@ int main(int argc, char** argv)
         pphi_i = Sptr_Potential_3d(new Potential_boost_3d(pphi_i, x, y, 0));
         pphi_sup->push_back(pphi_i);
     }
-    Potential_shift_3d phi(pphi_sup, U0);        
+    Potential_shift_3d phi(pphi_sup, U0);
     
     double dx = (xmax-xmin)/N;
     double dz = (zmax-zmin)/N;
-
     for (double x = xmin; x <= xmax; x += dx)
     {   for (double z = zmin; z <= zmax; z += dz)
         {

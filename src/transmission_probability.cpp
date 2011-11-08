@@ -13,7 +13,7 @@ static const double epsabs = 0;
 static const double epsrel = 1e-8;
 static const size_t iter_limit = 100;
 static const size_t integration_workspace_size = 1024;
-static const int integ_key = GSL_INTEG_GAUSS61;
+static const int integ_key = GSL_INTEG_GAUSS41;
 
 
 
