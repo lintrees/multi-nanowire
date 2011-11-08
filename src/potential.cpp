@@ -7,17 +7,25 @@
 
 #include "potential.h"
 
-static const double epsilon_0 = GSL_CONST_MKSA_VACUUM_PERMITTIVITY;
-static const double epsilon_0_4_pi = epsilon_0 * 4*M_PI;
+static const double eps_0 = GSL_CONST_MKSA_VACUUM_PERMITTIVITY;
+static const double e = GSL_CONST_MKSA_ELECTRON_CHARGE;
 
 
-double Potential_metal_ball::operator() (double x) const
-/* distance from origin */
+double Potential_metal_sphere::operator() (double x) const
+/* distance from the centre */
 {
+    static const double coeff = 1/(eps_0 *4*M_PI);
     assert(x >= 0);
     if (x > _R)
-    {   return _Q / (epsilon_0_4_pi * x); }
+    {   return coeff* _Q/x; }
     else
-    {   return _Q / (epsilon_0_4_pi * _R); }
+    {   return coeff* _Q/_R; }
+}
+
+double Potential_metal_sphere_image::operator() (double d) const
+/* distance from the sphere */
+{
+    static const double coeff = +e/(eps_0 *4*M_PI);
+    return coeff* _R/(2*d*(d+2*_R));
 }
 

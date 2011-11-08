@@ -48,7 +48,7 @@ int main(int argc, char** argv)
         double x = coord.x(i);
         double y = coord.y(i);
         Sptr_Potential_3d pphi_i;
-        pphi_i = Sptr_Potential_3d(new Potential_metal_ball_3d(Q, R));
+        pphi_i = Sptr_Potential_3d(new Potential_metal_sphere_3d(Q, R));
         pphi_i = Sptr_Potential_3d(new Potential_boost_3d(pphi_i, x, y, 0));
         pphi_sup->push_back(pphi_i);
     }

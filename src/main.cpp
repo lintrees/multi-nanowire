@@ -49,18 +49,23 @@ int main(int argc, char** argv)
     for (size_t i = 0; i < n; ++i)
     {
         double Q = gsl_vector_get(Qs, i);
-        Sptr_Potential pphi;
-        pphi = Sptr_Potential(new Potential_metal_ball(Q, R));
-        pphi = Sptr_Potential(new Potential_shift(pphi, phi0));
-        pphi = Sptr_Potential(new Potential_boost(pphi, -R));
-        Sptr_Potential_energy pU(new Potential_energy(pphi, (*pphi)(0)));
+        Potential_superimpose<>* pphi = new Potential_superimpose<>;
+        Sptr_Potential spphi;        
+        spphi = Sptr_Potential(new Potential_metal_sphere(Q, R));
+        spphi = Sptr_Potential(new Potential_boost(spphi, -R));
+        pphi->push_back(spphi);
+        spphi = Sptr_Potential(new Potential_constant(phi0));
+        pphi->push_back(spphi);
+        double iphi0 = (*pphi)(0);
+        spphi = Sptr_Potential(new Potential_metal_sphere_image(R));
+        pphi->push_back(spphi);
+        spphi = Sptr_Potential(pphi);        
+        Sptr_Potential_energy pU(new Potential_energy(spphi, iphi0));
         Sptr_Transmission_probability pT(new Transmission_probability(pU));
         Current_density I_1d(pT, pS, Ef, Ef);
         double i1d = I_1d();
         I_1ds[i] = i1d;
         I_1d_sum += i1d;
-//        std::cout << phi(0) << "   ..    " << U(2e-9) << std::endl;
-//        std::cout << Q << "  " << i1d << std::endl;
     }
     
     std::cout.precision(12);

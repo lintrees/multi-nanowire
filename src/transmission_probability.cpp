@@ -10,14 +10,17 @@
 
 static const double xmax = 10e-9; // max potential barriar length
 static const double epsabs = 0;
-static const double epsrel = 1e-9;
+static const double epsrel = 1e-8;
 static const size_t iter_limit = 100;
+static const size_t integration_workspace_size = 1024;
+static const int integ_key = GSL_INTEG_GAUSS61;
+
+
 
 static const double m_e = GSL_CONST_MKSA_MASS_ELECTRON;
 static const double hbar = GSL_CONST_MKSA_PLANCKS_CONSTANT_HBAR;
 static const double eV = GSL_CONST_MKSA_ELECTRON_VOLT;
 
-static const size_t integration_workspace_size = 1024;
 
 struct int_params_struct{
     const Potential_energy* pU;
@@ -29,7 +32,7 @@ static inline double int_func(double x, void* int_params)
     const Potential_energy* pU;
     pU = static_cast<int_params_struct*>(int_params)->pU;
     double E = static_cast<int_params_struct*>(int_params)->E;
-    double U_x = (*pU)(x);
+    double U_x = (*pU)(x); 
     if (E >= U_x)
     {   return 0; }
     else
@@ -48,7 +51,7 @@ double Transmission_probability::operator() (double E) const
     f.params = &int_params;
     double result, abserr;
     gsl_integration_qag(&f, 0, xmax, epsabs, epsrel, iter_limit,
-        GSL_INTEG_GAUSS41, w, &result, &abserr);        
+        integ_key, w, &result, &abserr);        
     gsl_integration_workspace_free(w);
     if (result == 0)
     {  return 1; }

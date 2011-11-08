@@ -17,27 +17,40 @@ class Potential
 
 typedef std::shared_ptr<Potential> Sptr_Potential;
 
-/* metal ball potential */
-class Potential_metal_ball: public Potential
+/* constant potential */
+class Potential_constant: public Potential
 {
     public:
-        Potential_metal_ball(double Q, double R)
+        Potential_constant(double phi0)
+            : _phi0(phi0) {}
+        double operator() (double x) const
+        {   return _phi0; }
+    private:
+        double _phi0;
+};
+
+/* metal sphere potential */
+class Potential_metal_sphere: public Potential
+{
+    public:
+        Potential_metal_sphere(double Q, double R)
             : _Q(Q), _R(R) { assert(R > 0); }
         double operator() (double x) const;
+        /* distance from the centre */
     private:
         double _Q;
         double _R;
 };
 
-/* metal ball potential */
-class Potential_metal_ball: public Potential
+/* metal sphere image potential */
+class Potential_metal_sphere_image : public Potential
 {
     public:
-        Potential_metal_ball(double Q, double R)
-            : _Q(Q), _R(R) { assert(R > 0); }
-        double operator() (double x) const;
+        Potential_metal_sphere_image(double R)
+            : _R(R) { assert(R > 0); }
+        double operator() (double d) const;
+        /* distance from the sphere */
     private:
-        double _Q;
         double _R;
 };
 
@@ -67,6 +80,19 @@ class Potential_shift: public Potential
         double _dphi;
 };
 
+/*  superimpose potential */
+template <class Container = std::vector<Sptr_Potential>>
+class Potential_superimpose: public Potential, public Container
+{
+    public:
+        double operator()(double x) const
+        {
+            double sum = 0;
+            for (auto ipPhi = this->cbegin(); ipPhi != this->cend(); ++ipPhi)
+            {   sum += (**ipPhi)(x); }
+            return sum;
+        }
+};
 
 /*
  * potential in 3d
@@ -79,18 +105,18 @@ class Potential_3d
 };
 typedef std::shared_ptr<Potential_3d> Sptr_Potential_3d;
 
-/* metal ball potential in 3d*/
-class Potential_metal_ball_3d: public Potential_3d
+/* metal sphere potential in 3d*/
+class Potential_metal_sphere_3d: public Potential_3d
 {
     public:
-        Potential_metal_ball_3d(double Q, double R)
+        Potential_metal_sphere_3d(double Q, double R)
             : _phi(Q, R) {}   
         double operator() (double x, double y, double z) const
         {
             return _phi(hypot(x, y, z));
         }
     private:    
-        Potential_metal_ball _phi;
+        Potential_metal_sphere _phi;
 };
 
 /*  boost potential in 3d */
@@ -134,6 +160,25 @@ class Potential_superimpose_3d: public Potential_3d, public Container
             return sum;
         }
 };
+
+/* 1d path potential from 3d */
+class Potential_path: public Potential
+{
+    public:
+        Potential_path(const Sptr_Potential_3d& pphi,
+            double x0, double y0, double z0, double theta, double phi)
+            : _pphi(pphi), _x0(x0), _y0(y0), _z0(z0),
+                _dx(sin(theta)*cos(phi)), _dy(sin(theta)*sin(phi)), _dz(cos(theta)) {}
+        double operator() (double r) const
+        {   return (*_pphi)(r*_dx+_x0, r*_dy+_y0, r*_dz+_z0); }
+    private:
+        const Sptr_Potential_3d _pphi;
+        double _x0, _y0, _z0;
+        double _dx, _dy, _dz;
+};
+
+
+
 
 class Potential_energy
 {

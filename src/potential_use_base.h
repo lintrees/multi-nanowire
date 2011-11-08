@@ -29,22 +29,22 @@ class Potential
 //        Shared_ptr_Potential_base _pbase;
 };
 
-/* metal ball potential */
-class Potential_base_metal_ball: public Potential_base
+/* metal sphere potential */
+class Potential_base_metal_sphere: public Potential_base
 {
     public:
-        Potential_base_metal_ball(double Q, double R)
+        Potential_base_metal_sphere(double Q, double R)
             : _Q(Q), _R(R) { assert(R > 0); }
         double operator() (double x) const;
     private:
         double _Q;
         double _R;
 };
-class Potential_metal_ball: public Potential
+class Potential_metal_sphere: public Potential
 {
     public:
-        typedef Potential_base_metal_ball Base;
-        Potential_metal_ball(double Q, double R)
+        typedef Potential_base_metal_sphere Base;
+        Potential_metal_sphere(double Q, double R)
             : _pbase(new Base(Q, R)) {}
         double operator() (double x) const
         {   return (*_pbase)(x); }
@@ -102,24 +102,24 @@ class Potential_3d
         Shared_ptr_Potential_base_3d _pbase;
 };
 
-/* metal ball potential in 3d*/
-class Potential_base_metal_ball_3d: public Potential_base_3d
+/* metal sphere potential in 3d*/
+class Potential_base_metal_sphere_3d: public Potential_base_3d
 {
     public:
-        Potential_base_metal_ball_3d(double Q, double R)
+        Potential_base_metal_sphere_3d(double Q, double R)
             : _phi(Q, R) {}
         double operator() (double x, double y, double z) const
         {
             return _phi(hypot(x, y, z));
         }
     private:
-        Potential_metal_ball _phi;
+        Potential_metal_sphere _phi;
 };
-class Potential_metal_ball_3d: public Potential_3d
+class Potential_metal_sphere_3d: public Potential_3d
 {
     public:
-        Potential_metal_ball_3d(double Q, double R)
-            : _pbase(new Potential_base_metal_ball_3d(Q, R)) {}
+        Potential_metal_sphere_3d(double Q, double R)
+            : _pbase(new Potential_base_metal_sphere_3d(Q, R)) {}
         
     private:
         Shared_ptr_Potential_base_3d _pbase;

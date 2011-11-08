@@ -8,19 +8,17 @@ except ImportError:
 
 import matplotlib.pyplot as plt
 
+
 X, Y, Z = [], [], []
-#for line1, line2 in zip(open("data/array_coord.dat"), open("Q.dat")):
-#    x, y = map(float, line1.split())
-#    z = float(line2)
-#    X.append(x)
-#    Y.append(y)
-#    Z.append(z)
-    
-for line in open("a.dat"):
-    x, y, z = map(float, line.split())
-    X.append(x)
-    Y.append(y)
-    Z.append(z)
+fn = "data/500.current.dat"
+for line in open(fn):
+    try:
+        x, y, z = map(float, line.split()[:3])
+        X.append(x)
+        Y.append(y)
+        Z.append(z)
+    except ValueError:
+        pass
     
     
 plt.hexbin(X, Y, Z)
