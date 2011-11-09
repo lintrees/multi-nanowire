@@ -101,7 +101,7 @@ class Potential_superimpose: public Potential, public Container
 class Potential_3d
 {
     public:
-        virtual double operator() (double x, double y, double z) const  {}//= 0;
+        virtual double operator() (double x, double y, double z) const = 0;
 };
 typedef std::shared_ptr<Potential_3d> Sptr_Potential_3d;
 
@@ -116,7 +116,7 @@ class Potential_metal_sphere_3d: public Potential_3d
             return _phi(hypot(x, y, z));
         }
     private:    
-        Potential_metal_sphere _phi;
+        const Potential_metal_sphere _phi;
 };
 
 /*  boost potential in 3d */
@@ -176,8 +176,6 @@ class Potential_path: public Potential
         double _x0, _y0, _z0;
         double _dx, _dy, _dz;
 };
-
-
 
 
 class Potential_energy
