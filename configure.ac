@@ -1,8 +1,8 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.68])
-AC_INIT([multi-nanowire], [0.1], [shaojw@student.sysu.edu.cn])
+#AC_PREREQ([2.68])
+AC_INIT([multi-nanowire], [1.0], [shaojw@student.sysu.edu.cn])
 AC_CONFIG_SRCDIR([src/charge_distribution.cpp])
 AC_CONFIG_HEADERS([config.h])
 
