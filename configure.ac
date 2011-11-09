@@ -19,6 +19,7 @@ AC_CHECK_LIB([gslcblas],[cblas_dgemm])
 AC_CHECK_LIB([gsl],[gsl_blas_dgemm])
 
 # Checks for header files.
+AC_HEADER_ASSERT
 
 # Checks for typedefs, structures, and compiler characteristics.
 CXXFLAGS="$CXXFLAGS -std=c++0x"
@@ -28,7 +29,6 @@ CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
 AC_C_INLINE
 if test "$ac_cv_c_inline" != no ; then
 AC_DEFINE([HAVE_INLINE], [1], [Define to 1 if use inline function in  the `gsl' library])
-#AC_SUBST([HAVE_INLINE])
 fi
 
 # Checks for library functions.
