@@ -5,6 +5,9 @@
 
 #include "potential.h"
 
+namespace Cartesian_1d
+{
+
 class Transmission_probability
 {
     public:
@@ -14,5 +17,7 @@ class Transmission_probability
         const Sptr_Potential_energy _pU;
 };
 typedef std::shared_ptr<Transmission_probability> Sptr_Transmission_probability;
+
+} // namespace Cartesian_1d
 
 #endif // _TRANSMISSION_PROBABILITY_H_

@@ -18,6 +18,8 @@
 #include "current.h"
 
 using namespace std;
+using namespace Cartesian_1d;
+using namespace Cartesian_3d;
 
 //using std::cin, std::cout, std::endl;
 

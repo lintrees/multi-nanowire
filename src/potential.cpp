@@ -11,6 +11,8 @@ static const double eps_0 = GSL_CONST_MKSA_VACUUM_PERMITTIVITY;
 static const double e = GSL_CONST_MKSA_ELECTRON_CHARGE;
 
 
+namespace Cartesian_1d
+{
 double Potential_metal_sphere::operator() (double x) const
 /* distance from the centre */
 {
@@ -28,4 +30,4 @@ double Potential_metal_sphere_image::operator() (double d) const
     static const double coeff = +e/(eps_0 *4*M_PI);
     return coeff* _R/(2*d*(d+2*_R));
 }
-
+} // namespace Cartesian_1d

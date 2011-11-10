@@ -19,6 +19,8 @@ static const size_t N = 200;
 static const double xmin = -1.5e-6, xmax = 1.5e-6;
 static const double zmin = 0, zmax = 1e-6;
 
+using namespace Cartesian_1d;
+using namespace Cartesian_3d;
 
 struct Nanowire
 {

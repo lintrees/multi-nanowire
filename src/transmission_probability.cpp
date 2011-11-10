@@ -7,6 +7,7 @@
 
 #include "transmission_probability.h"
 
+using namespace Cartesian_1d;
 
 static const double xmax = 10e-9; // max potential barriar length
 static const double epsabs = 0;
@@ -14,8 +15,6 @@ static const double epsrel = 1e-8;
 static const size_t iter_limit = 100;
 static const size_t integration_workspace_size = 1024;
 static const int integ_key = GSL_INTEG_GAUSS41;
-
-
 
 static const double m_e = GSL_CONST_MKSA_MASS_ELECTRON;
 static const double hbar = GSL_CONST_MKSA_PLANCKS_CONSTANT_HBAR;

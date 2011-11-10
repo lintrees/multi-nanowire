@@ -4,6 +4,8 @@
 #include "transmission_probability.h"
 #include "electron_supply.h"
 
+namespace Cartesian_1d
+{
 
 class Current_density
 {
@@ -18,5 +20,7 @@ class Current_density
         double _Ef;
         double _int_Emin;
 };
+
+} // namespace Cartesian_1d
 
 #endif // _CURRENT_H_

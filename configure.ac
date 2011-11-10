@@ -17,6 +17,10 @@ AC_LANG([C++])
 AC_CHECK_LIB([m],[cos])
 AC_CHECK_LIB([gslcblas],[cblas_dgemm])
 AC_CHECK_LIB([gsl],[gsl_blas_dgemm])
+AC_CHECK_LIB([gmp], [__gmpq_init])
+AC_CHECK_LIB([CGAL], [main])
+
+
 
 # Checks for header files.
 AC_HEADER_ASSERT

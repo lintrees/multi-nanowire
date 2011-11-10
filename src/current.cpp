@@ -8,6 +8,8 @@
 
 #include "current.h"
 
+using namespace Cartesian_1d;
+
 static const double epsabs = 0;
 static const double epsrel = 1e-6;
 static const size_t iter_limit = 100;
@@ -41,7 +43,7 @@ double Current_density::operator() () const
     f.params = &int_params;    
     double result, abserr;
     gsl_integration_qag(&f, _int_Emin, int_Emax, epsabs, epsrel, iter_limit,
-         integ_key, w, &result, &abserr);    
+         integ_key, w, &result, &abserr);
     gsl_integration_workspace_free(w);
     return e*e*result;
 }
