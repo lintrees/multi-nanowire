@@ -38,4 +38,4 @@ while len(coords) < N:
     
 with open(fn_array_coord, 'w') as fout:
     for x, y in coords:
-        print("{:20.12e}   {:20.12e}".format(x, y), file=fout)
+        print("{0:20.12e}   {1:20.12e}".format(x, y), file=fout)
