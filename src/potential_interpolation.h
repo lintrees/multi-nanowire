@@ -20,6 +20,8 @@ typedef std::map<Point, K::Vector_2 , K::Less_xy_2> Point_vector_map;
  * 2d Potential 
  */
  
+class Coordinate_2d;
+ 
 namespace Cartesian_2d
 {
 
@@ -28,9 +30,10 @@ class Potential_2d
     public:
         virtual double operator() (double x, double y) const  = 0;
 };
+typedef std::shared_ptr<Potential_2d> Sptr_Potential_2d;
 
 /* Interpolation Potential */
-class Coordinate_2d;
+
 class Potential_interpolation_2d: Potential_2d
 {
     public:
@@ -44,22 +47,54 @@ class Potential_interpolation_2d: Potential_2d
 
 } // namespace Cartesian_2d
 
-namespace Cylindrical
+//namespace Cylindrical
+//{
+///* base Potential class */
+//class Potential:
+//{
+//    public:
+//        virtual double operator()(double rho, double z, double phi=0) const = 0;
+//};
+
+///* potential from Cartesian_2d to Cylindrical */
+//class Potential_rotate: Potential
+//{
+//    public:        
+//        Potential_rotate(const Cartesian_2d::Sptr_Potential_2d& pphi)
+//            : _pphi(pphi) {}
+//        double operator()(double rho, double z, double phi=0) const
+//        {
+//            return _pphi(rho, z);
+//        }
+//    private:
+//        Cartesian_2d::Sptr_Potential_2d _pphi;    
+//};
+
+//} // namespace Cylindrical
+
+namespace Cartesian_3d
 {
 
-class Potential:
+/* potential from Cylindrical to Cartesian_3d */
+class Potential_rotate: public Potential_3d
 {
     public:
-        virtual double operator()(double rho, double z, double phi=0) const  = 0;
+        Potential_rotate(std::shared_ptr<Cartesian_2d::Potential_2d> pphi)
+            : _pphi(pphi) {}   
+        double operator() (double x, double y, double z) const
+        {
+            return (*_pphi)(gsl_hypot(x, y), z);
+        }
+    private:    
+        const std::shared_ptr<Cartesian_2d::Potential_2d> _pphi;
 };
 
-class Potential_section:Potential
-{
-    
-};
+
+} // namespace Cartesian_3d
 
 
-} // namespace Cylindrical
+
+
 
 
 #endif // _POTENTIAL_INTERPOLATION_H_

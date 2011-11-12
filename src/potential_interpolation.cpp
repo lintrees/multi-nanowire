@@ -12,6 +12,8 @@
 #include <CGAL/sibson_gradient_fitting.h>
 #include <CGAL/interpolation_functions.h>
 
+namespace Cartesian_2d
+{
 
 //typedef std::map<Point, K::Vector_2, K::Less_xy_2 >     Point_vector_map;
 
@@ -44,3 +46,5 @@ double Potential_interpolation_2d::operator()(double rho, double z) const
         CGAL::Data_access<Point_vector_map>(_grad_map),
         GradTraits());        
 }
+
+} // namespace Cartesian_2d
