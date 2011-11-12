@@ -23,11 +23,13 @@ using namespace Cartesian_3d;
 
 //using std::cin, std::cout, std::endl;
 
-static const char* fn_array_coord = "data/array_coord.dat";
+static constexpr char* fn_array_coord = "data/array_coord.dat\0";
 
-static const double Ef = -5.;
+static constexpr double Ef = -5.;
 
 gsl_vector* Charge_distri(double phi, double R, const Inner_distance& inner_dist);
+Potential_3d* Potential_background(
+    const Coordinate_2d& coord, const std::vector<double>& vphi);
 
 int main(int argc, char** argv)
 {

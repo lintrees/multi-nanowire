@@ -16,7 +16,7 @@ namespace Cartesian_1d
 double Potential_metal_sphere::operator() (double x) const
 /* distance from the centre */
 {
-    constexpr static double coeff = 1/(eps_0 *4*M_PI);
+    const static double coeff = 1/(eps_0 *4*M_PI);
     assert(x >= 0);
     if (x > _R)
     {   return coeff* _Q/x; }
@@ -27,7 +27,7 @@ double Potential_metal_sphere::operator() (double x) const
 double Potential_metal_sphere_image::operator() (double d) const
 /* distance from the sphere */
 {
-    constexpr static double coeff = +e/(eps_0 *4*M_PI);
+    const static double coeff = +e/(eps_0 *4*M_PI);
     return coeff* _R/(2*d*(d+2*_R));
 }
 } // namespace Cartesian_1d

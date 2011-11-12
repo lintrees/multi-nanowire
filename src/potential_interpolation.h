@@ -34,7 +34,7 @@ typedef std::shared_ptr<Potential_2d> Sptr_Potential_2d;
 
 /* Interpolation Potential */
 
-class Potential_interpolation_2d: Potential_2d
+class Potential_interpolation_2d: public Potential_2d
 {
     public:
         Potential_interpolation_2d(const Coordinate_2d& , const std::vector<double>&);
