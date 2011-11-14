@@ -15,16 +15,17 @@ from numpy import array
 
 datadir = "data/"
 
-
-fn_potential = "potential.out"
-fn_triangle = "triangle.out"
+if len(argv) == 1:
+    fn_potential = "single.potential.out"
+    fn_triangle = "single.triangle.out"
+elif len(argv) == 2 and argv[1] == "background":
+    fn_potential = "single.background.potential.out"
+    fn_triangle = "single.background.triangle.out"
+else:
+    raise
 
 x0, y0 = map(float, input().split()[:2])
 
-if len(argv) > 1:
-    fn_prefix = argv[1]
-    fn_potential = '.'.join((fn_prefix, fn_potential))
-    fn_triangle = '.'.join((fn_prefix, fn_triangle))
 
 class Point(object): pass
 

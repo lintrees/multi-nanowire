@@ -20,7 +20,7 @@ Coordinate_2d::Coordinate_2d(std::istream& is)
     while(getline(is, str))
     {
         ss.clear();
-        ss << str;
+        ss.str(str);
         ss >> x >> y;
         vx.push_back(x);
         vy.push_back(y);
@@ -70,17 +70,6 @@ Inner_distance::Inner_distance(const Coordinate_2d& coord)
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 Inner_distance::~Inner_distance()
 {

@@ -21,71 +21,74 @@ using namespace std;
 using namespace Cartesian_1d;
 using namespace Cartesian_3d;
 
-//using std::cin, std::cout, std::endl;
-
-static constexpr char* fn_array_coord = "data/array_coord.dat\0";
-
+static constexpr char fn_array_coord[] = "data/array_coord.dat";
 static constexpr double Ef = -5.;
+static constexpr double hNW = 1e-6;
 
-gsl_vector* Charge_distri(double phi, double R, const Inner_distance& inner_dist);
-Potential_3d* Potential_background(
-    const Coordinate_2d& coord, const std::vector<double>& vphi);
+typedef std::shared_ptr<Potential_3d> Sp3d;
+typedef std::shared_ptr<Potential> Sp1d;
+typedef std::shared_ptr<Potential_superimpose<>> Sp1d_sup;
+typedef std::shared_ptr<Potential_superimpose_3d<>> Sp3d_sup;
+
+vector<double> Charge_distri(const vector<double>& vphi, double R, const Inner_distance& inner_dist);
+Potential_3d* Potential_background();
 
 int main(int argc, char** argv)
 {
-    std::ifstream ifs(fn_array_coord);
-    Coordinate_2d coord(ifs);
-    Inner_distance inner_distance(coord);
-
-
     double phi0, R;
     assert(argc==3);
     phi0 = atof(argv[1]);
     R = atof(argv[2]);
-    gsl_vector* Qs = Charge_distri(phi0, R, inner_distance);
+    std::ifstream ifs(fn_array_coord);
+    Coordinate_2d coord(ifs);
+    ifs.close();
+    size_t n = coord.size();
+    Inner_distance inner_distance(coord);
+    Potential_3d* pphi_background = Potential_background();
+    Sp3d spphi_background(Potential_background());
+    vector<double> vphi_background(n), vphi_delta(n);
+    for (int i = 0; i < n; ++i)
+    {
+        vphi_background[i] = (*spphi_background)(coord.x(i), coord.y(i), hNW);
+        vphi_delta[i] = phi0 - vphi_background[i];
+    }
+    vector<double> vQ = Charge_distri(vphi_delta, R, inner_distance);
 
-    size_t n = Qs->size;
     Sptr_Electron_supply pS(new Electron_supply);
     double I_1d_sum;
-    std::vector<double> I_1ds(n);
-    std::shared_ptr<Potential_superimpose_3d<>>
-        pphi_sup(new Potential_superimpose_3d<>);
+    Sp3d_sup spphi_sup(new Potential_superimpose_3d<>);
+    // add all metal sphere potential
     for (size_t i = 0; i < n; ++i)
     {
-        double Q = gsl_vector_get(Qs, i);
+        double Q = vQ[i];
         double x = coord.x(i);
         double y = coord.y(i);
-        Sptr_Potential_3d pphi_i;
-        pphi_i = Sptr_Potential_3d(new Potential_metal_sphere_3d(Q, R));
-        pphi_i = Sptr_Potential_3d(new Potential_boost_3d(pphi_i, x, y, 0));
-        pphi_sup->push_back(pphi_i);
+        Sp3d spphi;
+        spphi = Sp3d(new Potential_metal_sphere_3d(Q, R));
+        spphi = Sp3d(new Potential_boost_3d(spphi, x, y, 0));
+        spphi_sup->push_back(spphi);
     }
-    
+
+    std::vector<double> vI_1d(n);
     #pragma omp parallel
     #pragma omp for schedule(dynamic) reduction(+:I_1d_sum)
     for (size_t i = 0; i < n; ++i)
     {
-        double Q = gsl_vector_get(Qs, i);
+        double Q = vQ[i];
         double x = coord.x(i);
         double y = coord.y(i);
-        Potential_superimpose<>* pphi = new Potential_superimpose<>;
-        Sptr_Potential spphi;        
-        spphi = Sptr_Potential(new Potential_path(pphi_sup, x, y, R, 0, 0));
-        pphi->push_back(spphi);
-        spphi = Sptr_Potential(new Potential_constant(phi0));
-        pphi->push_back(spphi);
-        double iphi0 = (*pphi)(0);
-        spphi = Sptr_Potential(new Potential_metal_sphere_image(R));
-        pphi->push_back(spphi);
-        spphi = Sptr_Potential(pphi);        
-        Sptr_Potential_energy pU(new Potential_energy(spphi, iphi0));
-        Sptr_Transmission_probability pT(new Transmission_probability(pU));
+        Sp1d_sup spphi_sup_i(new Potential_superimpose<>);
+        spphi_sup_i->push_back(Sp1d(new Potential_path(spphi_sup, x, y, R, 0, 0)));
+        double iphi0 = (*spphi_sup_i)(0);
+        spphi_sup_i->push_back(Sp1d(new Potential_metal_sphere_image(R)));
+        shared_ptr<Potential_energy> pU(new Potential_energy(spphi_sup_i, iphi0));
+        shared_ptr<Transmission_probability> pT(new Transmission_probability(pU));
         Current_density I_1d(pT, pS, Ef, Ef);
         double i1d = I_1d();
-        I_1ds[i] = i1d;
+        vI_1d[i] = i1d;
         I_1d_sum += i1d;
     }
-    
+
     std::cout.precision(12);
     for (size_t i = 0; i < n; ++i)
     {
@@ -94,9 +97,9 @@ int main(int argc, char** argv)
         cout.width(18);
         cout << coord.y(i) << "   ";
         cout.width(18);
-        cout << gsl_vector_get(Qs, i) << "   ";
+        cout << vQ[i] << "   ";
         cout.width(18);
-        cout  << I_1ds[i]*M_PI*R*R << endl;
+        cout  << vI_1d[i]*M_PI*R*R << endl;
     }
     std::cout << I_1d_sum*M_PI*R*R << std::endl;
 }
