@@ -74,7 +74,7 @@ int main(int argc, char** argv)
     
     double dx = (xmax-xmin)/N;
     double dz = (zmax-zmin)/N;
-    double grid[N][N];
+    double grid[N+1][N+1];
     #pragma omp parallel
     #pragma omp for schedule(guided)
     for (int i = 0; i <= N; ++i)
