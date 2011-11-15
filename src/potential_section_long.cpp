@@ -74,6 +74,7 @@ int main(int argc, char** argv)
     
     double dx = (xmax-xmin)/N;
     double dz = (zmax-zmin)/N;
+    double grid[N][N];
     #pragma omp parallel
     #pragma omp for schedule(guided)
     for (int i = 0; i <= N; ++i)
@@ -82,10 +83,20 @@ int main(int argc, char** argv)
         for (int j = 0; j <= N; ++j)
         {
             double z = zmin +j*dz;
-            double p = (*spphi_sup)(x, 0, z);
+            grid[i][j] = (*spphi_sup)(x, 0, z);
+        }
+    }
+    
+    #pragma omp single
+    for (int i = 0; i <= N; ++i)
+    {
+        double x = xmin + i*dx;
+        for (int j = 0; j <= N; ++j)
+        {
+            double z = zmin +j*dz;
             std::cout << x << "   "
                       << z << "   "
-                      << p << std::endl;
+                      << grid[i][j] << std::endl;
         }
     }
 
