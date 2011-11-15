@@ -118,12 +118,12 @@ class Potential_metal_sphere_3d: public Potential_3d
 {
     public:
         Potential_metal_sphere_3d(double Q, double R)
-            : _phi(Q, R) {}   
+            : _phi(Q, R) {}
         double operator() (double x, double y, double z) const
         {
             return _phi(gsl_hypot3(x, y, z));
         }
-    private:    
+    private:
         const Cartesian_1d::Potential_metal_sphere _phi;
 };
 
@@ -139,7 +139,7 @@ class Potential_boost_3d: public Potential_3d
         }
     private:
         const Sptr_Potential_3d _pphi;
-        double _x0, _y0, _z0;    
+        double _x0, _y0, _z0;
 };
 
 /* shift potential in 3d */
@@ -153,6 +153,31 @@ class Potential_shift_3d: public Potential_3d
     private:
         const Sptr_Potential_3d _pphi;
         double _dphi;
+};
+
+/* reflect to xy-plane potential in 3d */
+class Potential_reflect_xy_3d: public Potential_3d
+{
+    public:
+        Potential_reflect_xy_3d(const Sptr_Potential_3d& pphi, double z0=0)
+            : _pphi(pphi), _z0_2(z0*2) {}
+        double operator()(double x, double y, double z) const
+        {   return (*_pphi)(x, y, _z0_2-z); }
+    private:
+        const Sptr_Potential_3d _pphi;
+        double _z0_2;
+};
+
+/* opposite potential in 3d */
+class Potential_opposite_3d: public Potential_3d
+{
+    public:
+        Potential_opposite_3d(const Sptr_Potential_3d& pphi)
+            : _pphi(pphi) {}
+        double operator()(double x, double y, double z) const
+        {   return - (*_pphi)(x, y, z); }
+    private:
+        const Sptr_Potential_3d _pphi;
 };
 
 /*  superimpose potential in 3d */
