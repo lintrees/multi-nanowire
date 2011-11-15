@@ -1,5 +1,6 @@
 #include <config.h>
 
+#include <omp.h>
 #include <cassert>
 #include <vector>
 #include <iostream>
@@ -70,11 +71,17 @@ int main(int argc, char** argv)
 //    Sp3d spphi_bg_boost(new Potential_boost_3d(spphi_background, 0, 0, -hNW));
     spphi_sup->push_back(spphi_background);    
     
+    
     double dx = (xmax-xmin)/N;
     double dz = (zmax-zmin)/N;
-    for (double x = xmin; x <= xmax; x += dx)
-    {   for (double z = zmin; z <= zmax; z += dz)
+    #pragma omp parallel
+    #pragma omp for schedule(guided)
+    for (int i = 0; i <= N; ++i)
+    {
+        double x = xmin + i*dx;
+        for (int j = 0; j <= N; ++j)
         {
+            double z = zmin +j*dz;
             double p = (*spphi_sup)(x, 0, z);
             std::cout << x << "   "
                       << z << "   "
