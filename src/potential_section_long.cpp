@@ -40,7 +40,6 @@ int main(int argc, char** argv)
     ifs.close();
     size_t n = coord.size();
     Inner_distance inner_distance(coord);
-    Potential_3d* pphi_background = Potential_background();
     Sp3d spphi_background(Potential_background());
     vector<double> vphi_background(n), vphi_delta(n);
     for (int i = 0; i < n; ++i)
@@ -70,7 +69,6 @@ int main(int argc, char** argv)
     // add all background potential
 //    Sp3d spphi_bg_boost(new Potential_boost_3d(spphi_background, 0, 0, -hNW));
     spphi_sup->push_back(spphi_background);    
-    
     
     double dx = (xmax-xmin)/N;
     double dz = (zmax-zmin)/N;

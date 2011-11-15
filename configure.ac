@@ -35,6 +35,11 @@ if test "$ac_cv_c_inline" != no ; then
 AC_DEFINE([HAVE_INLINE], [1], [Define to 1 if use inline function in  the `gsl' library])
 fi
 
+AC_COMPILE_IFELSE(
+    [AC_LANG_SOURCE([[constexpr int i(0);]])],
+    [],
+    [AC_DEFINE([constexpr], [const], [no support for constexpr])])
+
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile src/Makefile])
