@@ -85,7 +85,7 @@ int main(int argc, char** argv)
 #ifdef SINGLE_SPHERE_CHARGE_APPROX
         Sp1d spphi;
         spphi = Sp1d(new Potential_metal_sphere(Q, R));
-        spphi = Sp1d(new Potential_boost(spphi, R));
+        spphi = Sp1d(new Potential_boost(spphi, -R));
         spphi_sup_i->push_back(spphi);
 #else
         spphi_sup_i->push_back(Sp1d(new Potential_path(spphi_sup, x, y, R, 0, 0)));
