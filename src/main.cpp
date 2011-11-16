@@ -56,6 +56,8 @@ int main(int argc, char** argv)
 
     Sptr_Electron_supply pS(new Electron_supply);
     double I_1d_sum;
+    
+#ifndef SINGLE_SPHERE_CHARGE_APPROX
     Sp3d_sup spphi_sup(new Potential_superimpose_3d<>);
     // add all metal sphere potential
     for (size_t i = 0; i < n; ++i)
@@ -68,6 +70,7 @@ int main(int argc, char** argv)
         spphi = Sp3d(new Potential_boost_3d(spphi, x, y, 0));
         spphi_sup->push_back(spphi);
     }
+#endif // SINGLE_SPHERE_CHARGE_APPROX
 
     std::vector<double> vI_1d(n);
     #pragma omp parallel
@@ -78,7 +81,16 @@ int main(int argc, char** argv)
         double x = coord.x(i);
         double y = coord.y(i);
         Sp1d_sup spphi_sup_i(new Potential_superimpose<>);
+        
+#ifdef SINGLE_SPHERE_CHARGE_APPROX
+        Sp1d spphi;
+        spphi = Sp1d(new Potential_metal_sphere(Q, R));
+        spphi = Sp1d(new Potential_boost(spphi, R));
+        spphi_sup_i->push_back(spphi);
+#else
         spphi_sup_i->push_back(Sp1d(new Potential_path(spphi_sup, x, y, R, 0, 0)));
+#endif // SINGLE_SPHERE_CHARGE_APPROX
+
         double iphi0 = (*spphi_sup_i)(0);
         spphi_sup_i->push_back(Sp1d(new Potential_metal_sphere_image(R)));
         shared_ptr<Potential_energy> pU(new Potential_energy(spphi_sup_i, iphi0));
