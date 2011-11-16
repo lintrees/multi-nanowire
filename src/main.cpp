@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     vector<double> vQ = Charge_distri(vphi_delta, R, inner_distance);
 
     Sptr_Electron_supply pS(new Electron_supply);
-    double I_1d_sum;
+    double I_1d_sum(0);
     
 #ifndef SINGLE_SPHERE_CHARGE_APPROX
     Sp3d_sup spphi_sup(new Potential_superimpose_3d<>);
