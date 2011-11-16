@@ -10,12 +10,7 @@
 #include "potential.h"
 
 static constexpr char fn_array_coord[] = "data/array_coord.dat";
-
 static constexpr size_t N = 200;
-static constexpr double xmin = -1.4e-6, xmax = 1.4e-6;
-static constexpr double zmin = 0, zmax = 2e-6;
-
-static constexpr double hNW = 1e-6;
 
 using namespace std;
 using namespace Cartesian_1d;
@@ -32,9 +27,17 @@ Potential_3d* Potential_background();
 int main(int argc, char** argv)
 {
     double phi0, R;
-    assert(argc==3);
+    double xmin, xmax, zmin, zmax, hNW;
+    
+    assert(argc==6);
     phi0 = atof(argv[1]);
     R = atof(argv[2]);
+    hNW = atof(argv[3]);
+    xmax = atof(argv[4]);
+    xmin = -xmax;
+    zmax = atof(argv[5]);
+    zmin = 0;
+    
     std::ifstream ifs(fn_array_coord);
     Coordinate_2d coord(ifs);
     ifs.close();
