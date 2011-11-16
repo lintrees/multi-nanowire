@@ -74,16 +74,17 @@ int main(int argc, char** argv)
     double dz = (zmax-zmin)/N;
     double grid[N+1][N+1];
     #pragma omp parallel
-    #pragma omp for schedule(guided)
     for (int i = 0; i <= N; ++i)
     {
         double x = xmin + i*dx;
+        #pragma omp for schedule(guided) nowait
         for (int j = 0; j <= N; ++j)
         {
             double z = zmin +j*dz;
             grid[i][j] = (*spphi_sup)(x, 0, z);
         }
     }
+    #pragma omp barrier
     
     #pragma omp single
     for (int i = 0; i <= N; ++i)
