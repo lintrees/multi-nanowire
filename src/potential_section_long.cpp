@@ -80,7 +80,7 @@ int main(int argc, char** argv)
     for (int i = 0; i <= N; ++i)
     {
         double x = xmin + i*dx;
-        #pragma omp for schedule(guided) nowait
+        #pragma omp for schedule(guided) nowait private(x)
         for (int j = 0; j <= N; ++j)
         {
             double z = zmin +j*dz;
