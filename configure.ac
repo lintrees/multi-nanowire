@@ -26,7 +26,7 @@ AC_CHECK_LIB([CGAL], [main])
 AC_HEADER_ASSERT
 
 # Checks for typedefs, structures, and compiler characteristics.
-CXXFLAGS="$CXXFLAGS -pipe -std=c++0x -frounding-math"
+CXXFLAGS="$CXXFLAGS -g -O2 -pipe -std=c++0x -frounding-math"
 AC_TYPE_SIZE_T
 AC_OPENMP
 CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
