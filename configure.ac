@@ -13,6 +13,8 @@ AC_PROG_CXX
 #AC_PROG_CC
 AC_LANG([C++])
 
+CXXFLAGS="$CXXFLAGS -g -O2 -pipe -std=c++0x -frounding-math"
+
 # Checks for libraries.
 AC_CHECK_LIB([m],[cos])
 AC_CHECK_LIB([gslcblas],[cblas_dgemm])
@@ -21,15 +23,17 @@ AC_CHECK_LIB([gmp], [__gmpq_init])
 AC_CHECK_LIB([CGAL], [main])
 
 
-
 # Checks for header files.
 AC_HEADER_ASSERT
 
+
 # Checks for typedefs, structures, and compiler characteristics.
-CXXFLAGS="$CXXFLAGS -g -O2 -pipe -std=c++0x -frounding-math"
+
 AC_TYPE_SIZE_T
+
 AC_OPENMP
 CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
+
 AC_C_INLINE
 if test "$ac_cv_c_inline" != no ; then
 AC_DEFINE([HAVE_INLINE], [1], [Define to 1 if use inline function in  the `gsl' library])

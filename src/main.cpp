@@ -36,9 +36,12 @@ Potential_3d* Potential_background();
 int main(int argc, char** argv)
 {
     double phi0, R;
-    assert(argc==3);
+    double Ec; // the bottom of the conduction band
+    assert(argc==4);
     phi0 = atof(argv[1]);
     R = atof(argv[2]);
+    Ec = atof(argv[3]);
+    
     std::ifstream ifs(fn_array_coord);
     Coordinate_2d coord(ifs);
     ifs.close();
@@ -95,7 +98,7 @@ int main(int argc, char** argv)
         spphi_sup_i->push_back(Sp1d(new Potential_metal_sphere_image(R)));
         shared_ptr<Potential_energy> pU(new Potential_energy(spphi_sup_i, iphi0));
         shared_ptr<Transmission_probability> pT(new Transmission_probability(pU));
-        Current_density I_1d(pT, pS, Ef, Ef);
+        Current_density I_1d(pT, pS, Ef, Ec);
         double i1d = I_1d();
         vI_1d[i] = i1d;
         I_1d_sum += i1d;

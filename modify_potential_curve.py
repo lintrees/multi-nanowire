@@ -8,8 +8,8 @@ except ImportError:
 
 from math import hypot
 
-fnin = "barrier.debug"
-fnout = "barrier.dat"
+fnin = "data/barrier.debug"
+fnout = "data/barrier.dat"
 
 origin = True
 
