@@ -67,7 +67,7 @@ static int f_fdf(const gsl_vector* x, void* params, gsl_vector* f, gsl_matrix* J
 
 int main(int argc, char** argv)
 {
-    assert(argc==2);
+    assert(argc==2)
     phi0 = atof(argv[1]);
     std::ifstream ifs(fnin);
     assert(ifs);
@@ -81,7 +81,6 @@ int main(int argc, char** argv)
     n = X.size();
 
     gsl_multifit_fdfsolver* s = gsl_multifit_fdfsolver_alloc(gsl_multifit_fdfsolver_lmsder, n, p);
-
     gsl_multifit_function_fdf f;
     f.f = &f_f;
     f.df = &f_df;
