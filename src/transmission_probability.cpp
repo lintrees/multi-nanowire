@@ -9,7 +9,7 @@
 
 using namespace Cartesian_1d;
 
-static constexpr double xmax = 10e-9; // max potential barriar length
+static constexpr double xmax = 5e-9; // max potential barriar length
 static constexpr double epsabs = 0;
 static constexpr double epsrel = 1e-8;
 static constexpr size_t iter_limit = 100;

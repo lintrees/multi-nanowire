@@ -13,7 +13,7 @@ AC_PROG_CXX
 #AC_PROG_CC
 AC_LANG([C++])
 
-CXXFLAGS="-g -O2 $CXXFLAGS -pipe -std=c++0x -frounding-math"
+CXXFLAGS="$CXXFLAGS -pipe -std=c++0x -frounding-math"
 
 # Checks for libraries.
 AC_CHECK_LIB([m],[cos])
