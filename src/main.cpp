@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <cmath>
+#include <algorithm>
 
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
@@ -76,7 +77,8 @@ int main(int argc, char** argv)
     }
 #endif // SINGLE_SPHERE_CHARGE_APPROX
 
-    std::vector<double> vI_1d(n);
+    vector<double> vI_1d(n);
+    vector<shared_ptr<Potential_energy> > vU(n);
     #pragma omp parallel
     #pragma omp for schedule(dynamic) reduction(+:I_1d_sum)
     for (size_t i = 0; i < n; ++i)
@@ -98,6 +100,7 @@ int main(int argc, char** argv)
         double phi0i = (*spphi_sup_i)(0);
         spphi_sup_i->push_back(Sp1d(new Potential_metal_sphere_image(R)));
         shared_ptr<Potential_energy> pU(new Potential_energy(spphi_sup_i, phi0i+phi_0));
+        vU[i] = pU;
         shared_ptr<Transmission_probability> pT(new Transmission_probability(pU));
         Current_density I_1d(pT, pS, Ef, Ec);
         double i1d = I_1d();
@@ -118,4 +121,17 @@ int main(int argc, char** argv)
         cout  << vI_1d[i]*M_PI*R*R << endl;
     }
     std::cout << I_1d_sum*M_PI*R*R << std::endl;
+    
+    std::cout << "----------------" << std::endl;
+    size_t imax;
+    double maxI_1d = 0;
+    for (size_t i = 0; i < n; ++i)
+    {
+        if (vI_1d[i] > maxI_1d)
+        {   imax = i; }
+    }    
+    for (double x = 0; x <= 5e-9; x+=0.1e-9)
+    {
+        std::cout << (*vU[imax])(x) << endl;
+    }
 }
