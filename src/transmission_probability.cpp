@@ -12,9 +12,9 @@ using namespace Cartesian_1d;
 static constexpr double xmax = 5e-9; // max potential barriar length
 static constexpr double epsabs = 0;
 static constexpr double epsrel = 1e-6;
-static constexpr size_t iter_limit = 100;
-static constexpr size_t integration_workspace_size = 1024;
-static constexpr int integ_key = GSL_INTEG_GAUSS41;
+static constexpr size_t iter_limit = 200;
+static constexpr size_t integration_workspace_size = 4096;
+static constexpr int integ_key = GSL_INTEG_GAUSS61;
 
 static constexpr double m_e = GSL_CONST_MKSA_MASS_ELECTRON;
 static constexpr double hbar = GSL_CONST_MKSA_PLANCKS_CONSTANT_HBAR;
