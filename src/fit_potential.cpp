@@ -19,7 +19,7 @@ static const double epsilon_0_4_pi = epsilon_0 * 4*M_PI;
 static const char* fnin = "data/barrier.dat";
 
 static std::vector<double> X, Y;
-static const double epsabs = 1e-8;
+static const double epsabs = 1e-10;
 
 static size_t n;
 static const size_t p = 2;
@@ -67,7 +67,7 @@ static int f_fdf(const gsl_vector* x, void* params, gsl_vector* f, gsl_matrix* J
 
 int main(int argc, char** argv)
 {
-    assert(argc==2)
+    assert(argc==2);
     phi0 = atof(argv[1]);
     std::ifstream ifs(fnin);
     assert(ifs);
@@ -81,6 +81,7 @@ int main(int argc, char** argv)
     n = X.size();
 
     gsl_multifit_fdfsolver* s = gsl_multifit_fdfsolver_alloc(gsl_multifit_fdfsolver_lmsder, n, p);
+
     gsl_multifit_function_fdf f;
     f.f = &f_f;
     f.df = &f_df;
@@ -88,7 +89,7 @@ int main(int argc, char** argv)
     f.n = n;
     f.p = p;
     
-    double x_init[p] = {1e-8, -1e-16};
+    double x_init[p] = {1e-9, -1e-17};
     gsl_vector_view x = gsl_vector_view_array(x_init, p);
     gsl_multifit_fdfsolver_set(s, &f, &x.vector);
 
@@ -104,7 +105,9 @@ int main(int argc, char** argv)
     } while (status == GSL_CONTINUE);
     
     double R = gsl_vector_get(s->x, 0);
+    double Q = gsl_vector_get(s->x, 1);
     printf("%.12g\n", R);
+//    printf("%.12g\n", Q);
 }
 
 

@@ -23,6 +23,7 @@ using namespace Cartesian_1d;
 using namespace Cartesian_3d;
 
 static constexpr char fn_array_coord[] = "data/array_coord.dat";
+static constexpr char fn_background_potential[] = "data/background.potential.out";
 static constexpr double Ef = -5.;
 static constexpr double phi_0 =(-5)-(-4.05); // zero point
 
@@ -32,7 +33,7 @@ typedef std::shared_ptr<Potential_superimpose<>> Sp1d_sup;
 typedef std::shared_ptr<Potential_superimpose_3d<>> Sp3d_sup;
 
 vector<double> Charge_distri(const vector<double>& vphi, double R, const Inner_distance& inner_dist);
-Potential_3d* Potential_background();
+Potential_3d* Potential_background(std::istream& is);
 
 int main(int argc, char** argv)
 {
@@ -49,8 +50,10 @@ int main(int argc, char** argv)
     ifs.close();
     size_t n = coord.size();
     Inner_distance inner_distance(coord);
-    Potential_3d* pphi_background = Potential_background();
-    Sp3d spphi_background(Potential_background());
+    
+    ifs.open(fn_background_potential);
+    Sp3d spphi_background(Potential_background(ifs));
+    ifs.close();
     vector<double> vphi_background(n), vphi_delta(n);
     for (int i = 0; i < n; ++i)
     {
