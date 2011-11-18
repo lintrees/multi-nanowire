@@ -23,7 +23,7 @@ using namespace Cartesian_3d;
 
 static constexpr char fn_array_coord[] = "data/array_coord.dat";
 static constexpr double Ef = -5.;
-static constexpr double hNW = 1e-6;
+static constexpr double phi_0 =(-5)-(-4.05); // zero point
 
 typedef std::shared_ptr<Potential_3d> Sp3d;
 typedef std::shared_ptr<Potential> Sp1d;
@@ -35,13 +35,14 @@ Potential_3d* Potential_background();
 
 int main(int argc, char** argv)
 {
-    double phi0, R;
+    double phi0, R, hNW;
     double Ec; // the bottom of the conduction band
-    assert(argc==4);
+    assert(argc==5);
     phi0 = atof(argv[1]);
     R = atof(argv[2]);
     Ec = atof(argv[3]);
-    
+    hNW = atof(argv[4]);
+
     std::ifstream ifs(fn_array_coord);
     Coordinate_2d coord(ifs);
     ifs.close();
@@ -59,7 +60,7 @@ int main(int argc, char** argv)
 
     Sptr_Electron_supply pS(new Electron_supply);
     double I_1d_sum(0);
-    
+
 #ifndef SINGLE_SPHERE_CHARGE_APPROX
     Sp3d_sup spphi_sup(new Potential_superimpose_3d<>);
     // add all metal sphere potential
@@ -84,7 +85,7 @@ int main(int argc, char** argv)
         double x = coord.x(i);
         double y = coord.y(i);
         Sp1d_sup spphi_sup_i(new Potential_superimpose<>);
-        
+
 #ifdef SINGLE_SPHERE_CHARGE_APPROX
         Sp1d spphi;
         spphi = Sp1d(new Potential_metal_sphere(Q, R));
@@ -94,9 +95,9 @@ int main(int argc, char** argv)
         spphi_sup_i->push_back(Sp1d(new Potential_path(spphi_sup, x, y, R, 0, 0)));
 #endif // SINGLE_SPHERE_CHARGE_APPROX
 
-        double iphi0 = (*spphi_sup_i)(0);
+        double phi0i = (*spphi_sup_i)(0);
         spphi_sup_i->push_back(Sp1d(new Potential_metal_sphere_image(R)));
-        shared_ptr<Potential_energy> pU(new Potential_energy(spphi_sup_i, iphi0));
+        shared_ptr<Potential_energy> pU(new Potential_energy(spphi_sup_i, phi0i+phi_0));
         shared_ptr<Transmission_probability> pT(new Transmission_probability(pU));
         Current_density I_1d(pT, pS, Ef, Ec);
         double i1d = I_1d();

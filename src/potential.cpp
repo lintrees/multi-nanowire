@@ -27,6 +27,9 @@ double Potential_metal_sphere::operator() (double x) const
 double Potential_metal_sphere_image::operator() (double d) const
 /* distance from the sphere */
 {
+    assert(d >= 0);
+//    if (d == 0)
+//    {   return +HUGE_VAL;}
     const static double coeff = +e/(eps_0 *4*M_PI);
     return coeff* _R/(2*d*(d+2*_R));
 }
