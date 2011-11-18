@@ -27,7 +27,6 @@ struct int_params_struct{
 };
 static inline double int_func(double x, void* int_params)
 {
-    static const double coeff = eV*2*m_e/(hbar*hbar);
     const Potential_energy* pU;
     pU = static_cast<int_params_struct*>(int_params)->pU;
     double E = static_cast<int_params_struct*>(int_params)->E;
@@ -35,13 +34,14 @@ static inline double int_func(double x, void* int_params)
     if (E >= U_x)
     {   return 0; }
     else
-    {   return sqrt(coeff*(U_x-E)); }
+    {   return sqrt(U_x-E); }
 }
 double Transmission_probability::operator() (double E) const
 /*  T(E) = \exp{-2\int \d x \sqrt{2*m_e/\hbar^2 *(U(x)-E)}}
     E in (eV)
 */
 {
+    static const double coeff_s = sqrt(eV*2*m_e/(hbar*hbar));
     gsl_integration_workspace* w;
     w = gsl_integration_workspace_alloc(integration_workspace_size);
     int_params_struct int_params = {_pU.get(), E};
@@ -55,5 +55,5 @@ double Transmission_probability::operator() (double E) const
     if (result == 0)
     {  return 1; }
     else
-    {  return exp(-2*result);}
+    {  return exp(-2*coeff_s*result);}
 }

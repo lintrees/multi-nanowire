@@ -132,6 +132,6 @@ int main(int argc, char** argv)
     }    
     for (double x = 0; x <= 5e-9; x+=0.1e-9)
     {
-        std::cout << (*vU[imax])(x) << endl;
+        std::cout << x << "    " << (*vU[imax])(x) << endl;
     }
 }
