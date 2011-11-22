@@ -121,10 +121,11 @@ int main(int argc, char** argv)
         cout.width(18);
         cout << vQ[i] << "   ";
         cout.width(18);
-        cout  << vI_1d[i]*M_PI*R*R << endl;
+        cout << vI_1d[i]*M_PI*R*R << endl;
     }
-    std::cout << I_1d_sum*M_PI*R*R << std::endl;    
-    std::cout << "----------------" << std::endl;
+    std::cout << I_1d_sum*M_PI*R*R << std::endl;
+    
+#ifndef NDEBUG
     size_t imax;
     double maxI_1d = 0;
     for (size_t i = 0; i < n; ++i)
@@ -134,6 +135,7 @@ int main(int argc, char** argv)
     }    
     for (double x = 0; x <= 5e-9; x+=0.1e-9)
     {
-        std::cout << x << "    " << (*vU[imax])(x) << endl;
+        std::cerr << x << "    " << (*vU[imax])(x) << endl;
     }
+#endif // NDEBUG
 }

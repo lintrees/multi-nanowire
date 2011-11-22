@@ -21,3 +21,5 @@ stamp-h1
 
 __pycache__/
 data/*
+doc/
+fig/
